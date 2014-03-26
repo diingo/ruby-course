@@ -4,7 +4,7 @@ module TM
     def run(inputs)
 
       if !validate_task(inputs)
-        return failer :invalid_task
+        return failure :invalid_task
       end
 
       if !validate_employee(inputs)

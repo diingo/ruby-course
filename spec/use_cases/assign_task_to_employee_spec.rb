@@ -7,6 +7,8 @@ describe "Assign Task to Employee" do
   end
 
   context "when tid and eid are valid" do
+
+    # need more narrowly defined test for this - test for exist, test for incomplete, etc
     it "successfully validates a task exists, is incomplete, and has no employee assigned to it" do
       emp = @db.create_emp("Jack")
       proj = @db.create_project("Save the World")
@@ -18,7 +20,7 @@ describe "Assign Task to Employee" do
   end
 
   context "when tid and eid are invalid" do
-    xit "fails" do
+    it "fails" do
       emp = @db.create_emp("Jack")
       proj = @db.create_project("Save the World")
       task = @db.add_task_to_proj(proj.id, "plant some trees", 2)
