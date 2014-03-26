@@ -4,7 +4,7 @@ class TM::Task
   attr_reader :id
   attr_accessor :description, :priority
   attr_reader :time_created
-  attr_accessor :time_completed
+  attr_accessor :time_completed, :eid
   # have custom setter for :completed
   attr_reader :completed
 
@@ -28,6 +28,8 @@ class TM::Task
 
     # task has no completed time when first created
     @time_completed = nil
+
+    @eid = nil
   end
 
   def completed=(new_value)

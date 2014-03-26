@@ -53,6 +53,10 @@ describe 'Task' do
       expect(task.time_completed).to be_nil
     end
 
+    it "defaults the task having an eid of nil" do
+      expect(task.eid).to be_nil
+    end
+
   end
 
   it "can mark a task as complete, giving it a completion date" do

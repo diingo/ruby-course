@@ -12,7 +12,7 @@ module TM
       end
 
       task = db.get_task(inputs[:tid])
-      emp = db.get_employee(inputs[:eid])
+      emp = db.get_emp(inputs[:eid])
 
       # Task can only be assigned to employee if the emp does not have another task and the task is incomplete
       task.eid = emp.id
@@ -29,8 +29,9 @@ module TM
     def validate_employee(inputs)
       eid = inputs[:eid]
       emp = db.employees[eid]
-      eid_tasks = db.tasks.values.select { |tid, task| task.eid == eid }
-      eid_incomplete_tasks = tasks.select { |task| task.completed == false }
+      # binding.pry
+      eid_tasks = db.tasks.values.select { |task| task.eid == eid }
+      eid_incomplete_tasks = eid_tasks.select { |task| task.completed == false }
       emp && eid_tasks == [] || eid_incomplete_tasks == []
     end
 
