@@ -28,16 +28,17 @@ class TM::DB
   def add_task_to_proj(pid, desc, priority)
 
     # ensure id and priority are integers
-    pid = pid.to_i
-    priority = priority.to_i
+    # pid = pid.to_i
+    # priority = priority.to_i
 
-    proj = @projects[pid]
 
-    added_task = TM::Task.new(pid, desc, priority)
+    create_task(pid, desc, priority)
 
-    @tasks[added_task.id] = added_task
+    # added_task = TM::Task.new(pid, desc, priority)
 
-    added_task
+    # @tasks[added_task.id] = added_task
+
+    # added_task
   end
 
   def show_proj_tasks_remaining(pid)
@@ -76,13 +77,27 @@ class TM::DB
   ## other Task CRUD Methods ##
   #############################
 
-  # create already covered by add_task_to_proj
+  # this is the sams as add_task_to_proj
+  # might remove it later
+  def create_task(pid, desc, priority)
+    pid = pid.to_i
+
+    task = TM::Task.new(pid, desc,priority)
+    task_id = task.id
+
+    @tasks[task_id] = task
+
+    task
+  end
 
   def get_task(tid)
+    tid = tid.to_i
+
     @tasks[tid]
   end
 
   def update_task(tid, new_description = nil, new_priority = nil)
+    tid = tid.to_i
     task = @tasks[tid]
 
     task.description = new_description || task.description
@@ -91,6 +106,7 @@ class TM::DB
   end
 
   def delete(tid)
+    tid = tid.to_i
     @tasks.delete(tid)
   end
 
@@ -108,15 +124,21 @@ class TM::DB
   end
 
   def get_proj(pid)
+    pid = pid.to_i
+
     @projects[pid]
   end
 
   def update_proj(pid, new_name = nil)
+    pid = pid.to_i
+
     proj = @projects[pid]
     proj.name = new_name || proj.name
   end
 
   def delete_proj(pid)
+    pid = pid.to_i
+
     @projects.delete(pid)
   end
 
@@ -131,16 +153,22 @@ class TM::DB
   end
 
   def get_emp(eid)
+    eid = eid.to_i
+
     @employees[eid]
   end
 
   def update_emp(eid, new_name)
+    eid = eid.to_i
+
     emp = @employees[eid]
     emp.name = new_name
     emp
   end
 
   def delete_emp(eid)
+    eid = eid.to_i
+
     @employees.delete(eid)
   end
 end
