@@ -14,15 +14,6 @@ describe 'DB' do
     end
   end
 
-  it "can create a project and add it to the projects hash" do
-
-    result = @db.create_project("The Best Project")
-    projects_hash = @db.projects
-
-    expect(projects_hash[1]).to be_a(TM::Project)
-    # expect the return value to be the created project
-    expect(result).to be_a(TM::Project)
-  end
 
   it "can add a task to a project given project id, task priority, and task description" do
     project_1 = @db.create_project("The Best Project")
@@ -145,7 +136,14 @@ describe 'DB' do
 
     let(:proj) { @db.create_project("The Best Proj") }
 
-    ## create already covered by create_proj method
+    it "can create a project and add it to the projects hash" do
+
+      proj = @db.create_project("The Best Project")
+      projects_hash = @db.projects
+
+      expect(proj).to be_a(TM::Project)
+      expect(projects_hash[proj.id]).to eq(proj)
+    end
 
     it "can get a project" do
       gotten_proj = @db.get_proj(proj.id)
@@ -230,7 +228,7 @@ describe 'DB' do
   ######################################
 
   describe "associate employees and tasks", :pending => true do
-    
+
     let(:emp) { @db.create_emp("Jack") }
 
     it "can allow an employee to participate in projects" do

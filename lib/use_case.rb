@@ -11,7 +11,6 @@ module TM
       self.new.run(inputs)
     end
 
-    :invalid_employee
     def failure(error_sym, data={})
       UseCaseFailure.new(data.merge :error => error_sym)
     end

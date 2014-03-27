@@ -24,13 +24,6 @@ class TM::DB
     @employees = {}
   end
 
-  def create_project(title)
-    proj = TM::Project.new(title)
-    proj_id = proj.id
-    @projects[proj_id] = proj
-
-    proj
-  end
 
   def add_task_to_proj(pid, desc, priority)
 
@@ -50,8 +43,6 @@ class TM::DB
   def show_proj_tasks_remaining(pid)
     # ensure id is an integer
     pid = pid.to_i
-
-    # binding.pry
 
     # array of tasks belonging to this pid
     # @tasks.values creates an array from values in @tasks hash
@@ -103,12 +94,18 @@ class TM::DB
     @tasks.delete(tid)
   end
 
-  ################################
-  ## other Project CRUD Methods ##
-  ################################
+  ##########################
+  ## Project CRUD Methods ##
+  ##########################
 
+  def create_project(title)
+    proj = TM::Project.new(title)
+    proj_id = proj.id
 
-  # create already covered by create_proj
+    @projects[proj_id] = proj
+
+    proj
+  end
 
   def get_proj(pid)
     @projects[pid]
