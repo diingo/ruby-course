@@ -23,7 +23,7 @@ module TM
     def validate_task(inputs)
       tid = inputs[:tid]
       task = db.tasks[tid]
-      task.complete == false && task.eid == nil
+      task.completed == false && task.eid == nil
     end
 
     def validate_employee(inputs)

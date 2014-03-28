@@ -11,32 +11,31 @@ module TM
         return failure :invalid_employee
       end
 
-      task = db.get_task(inputs[:tid])
-      emp = db.get_emp(inputs[:eid])
+      task = TM.db.get_task(inputs[:tid])
+      emp = TM.db.get_emp(inputs[:eid])
 
-      # Task can only be assigned to employee if the emp does not have another task and the task is incomplete
-      task.eid = emp.id
+      add_employee_to_task(emp, task)
 
       success :task => task, :get_employee => emp
     end
 
     def validate_task(inputs)
       tid = inputs[:tid]
-      task = db.tasks[tid]
-      task && task.completed == false && task.eid == nil
+      task = TM.db.tasks[tid]
+      task && task.completed == false
+
+      # old version
+      # task && task.completed == false && task.eid == nil
     end
 
     def validate_employee(inputs)
       eid = inputs[:eid]
-      emp = db.employees[eid]
-      # binding.pry
-      eid_tasks = db.tasks.values.select { |task| task.eid == eid }
-      eid_incomplete_tasks = eid_tasks.select { |task| task.completed == false }
-      emp && eid_tasks == [] || eid_incomplete_tasks == []
+      emp = TM.db.employees[eid]
+      emp
     end
 
-    def db
-      TM::DB.instance
+    def add_employee_to_task(emp, task)
+      task.eid = emp.id
     end
   end
 end

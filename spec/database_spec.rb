@@ -5,7 +5,7 @@ require 'spec_helper'
 
 describe 'DB' do
   before do
-    @db = TM::DB.instance
+    @db = TM::DB.new
   end
 
   describe '.initialize' do
@@ -20,7 +20,7 @@ describe 'DB' do
     added_task = @db.add_task_to_proj(project_1.id, "Eat Tacos", 3)
     # project_1 = @db.projects.first
     # puts project_1.id
-    project_1_tasks = project_1.tasks
+    # project_1_tasks = project_1.tasks
 
     # project_1_task_1 = project_1.tasks.first
     # removing because projects will no longer keep task data
@@ -28,8 +28,8 @@ describe 'DB' do
     # expect(project_1_task_1.description).to eq("Eat Tacos")
 
     expect(@db.tasks.length).to eq(1)
-    expect(@db.tasks[1]).to eq(added_task)
-    expect(@db.tasks[1].description).to eq("Eat Tacos")
+    expect(@db.tasks[added_task.id]).to eq(added_task)
+    expect(@db.tasks[added_task.id].description).to eq("Eat Tacos")
 
     # expec the add task method to return the added task
     expect(added_task.description).to eq("Eat Tacos")
@@ -192,21 +192,30 @@ describe 'DB' do
 
     let(:emp) { @db.create_emp("Jack") }
 
-    it 'can create an employee' do
+    # tests both create and get method
+    it 'can create and get an employee' do
       emp = @db.create_emp("Jack")
 
       expect(emp).to be_a(TM::Employee)
       expect(emp.name).to eq("Jack")
-      expect(@db.employees.size).to eq(1)
-      expect(@db.employees[emp.id].name).to eq("Jack")
+      expect(@db.get_emp(emp.id).name).to eq("Jack")
     end
 
-    it 'can get an employee' do
-      gotten_emp = @db.get_emp(emp.id)
+    # test create and all_employees method
+    it 'can create and access all employees' do
+      emp = @db.create_emp("Jack")
 
-      expect(gotten_emp).to be_a(TM::Employee)
-      expect(gotten_emp.name).to eq("Jack")
+      expect(emp).to be_a(TM::Employee)
+      expect(emp.name).to eq("Jack")
+      expect(@db.all_employees.size).to eq(1)
     end
+
+    # it 'can get an employee' do
+    #   gotten_emp = @db.get_emp(emp.id)
+
+    #   expect(gotten_emp).to be_a(TM::Employee)
+    #   expect(gotten_emp.name).to eq("Jack")
+    # end
 
     it "can update an employee" do
       updated_emp = @db.update_emp(emp.id, "Bill")
