@@ -121,3 +121,31 @@ end
 tm = TM::TerminalClient.new
 tm.start
 
+
+# class TerminalClient
+#   def start
+#     puts "type somethg"
+#     print " > "
+#     input = gets
+#     # Example input: task create 12 3 some description stuff
+#     split = input.split(' ')
+
+#     model = split.shift # e.g. project, task, emp
+#     action = split.shift # e.g. list, create, show, history, etc
+#     args = split # The rest of the arguments, since .split modifies the array
+
+#     self.send("#{model}_#{action}", *args)
+#   end
+
+#   def task_create(pid, priority, *description_parts)
+#     description = description_parts.join(' ')
+#     puts "Creating task with pid=#{pid}, priority=#{priority}, and description \"#{description}\""
+#   end
+
+#   def method_missing(meth, *args)
+#     puts "`#{meth.to_s.sub '_', ' '} #{args.join ' '}` is not a valid command"
+#   end
+# end
+
+# TerminalClient.new.start
+

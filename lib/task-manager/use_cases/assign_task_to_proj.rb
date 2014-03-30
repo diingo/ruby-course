@@ -16,7 +16,7 @@ module TM
       add_task_to_proj(inputs[:project_id], inputs[:desc], inputs[:priority])
     end
 
-    def add_task_to_proj
+    def assign_task_to_proj
       TM.db.create_task(pid, desc, priority)
     end
   end

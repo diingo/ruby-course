@@ -5,7 +5,6 @@ class TM::Task
   attr_accessor :description, :priority
   attr_reader :time_created
   attr_accessor :time_completed, :eid
-  # have custom setter for :completed
   attr_reader :completed
 
   @@counter = 0

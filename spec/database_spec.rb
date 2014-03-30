@@ -1,109 +1,45 @@
 require 'spec_helper'
 
-# class DB now replaces ProjectList
-# this spec uses the singleton version of DB
-
 describe 'DB' do
   before do
-    @db = TM::DB.new
+    @db = TM.db
   end
 
   describe '.initialize' do
-    it "defaults the Project List with an empty projects hash" do
-      expect(@db.projects).to eq({})
+    it "starts with no project, no employees, no tasks, no memberships" do
+      expect(@db.all_projects).to eq([])
+      expect(@db.all_tasks).to eq([])
+      expect(@db.all_employees).to eq([])
+      expect(@db.all_memberships).to eq([])
     end
   end
 
+  #######################
+  ## Task CRUD Methods ##
+  #######################
 
-  it "can add a task to a project given project id, task priority, and task description" do
-    project_1 = @db.create_project("The Best Project")
-    added_task = @db.add_task_to_proj(project_1.id, "Eat Tacos", 3)
-    # project_1 = @db.projects.first
-    # puts project_1.id
-    # project_1_tasks = project_1.tasks
+  describe "Task CRUD Methods" do
+    let(:proj) { @db.create_proj("The Best Proj") }
 
-    # project_1_task_1 = project_1.tasks.first
-    # removing because projects will no longer keep task data
-    # expect(project_1_tasks.size).to eq(1)
-    # expect(project_1_task_1.description).to eq("Eat Tacos")
 
-    expect(@db.tasks.length).to eq(1)
-    expect(@db.tasks[added_task.id]).to eq(added_task)
-    expect(@db.tasks[added_task.id].description).to eq("Eat Tacos")
+    it 'can create and get a task' do
+      task = @db.create_task(proj.id, "Eat Tacos", 3)
+      retrieved_task = @db.get_task(task.id)
 
-    # expec the add task method to return the added task
-    expect(added_task.description).to eq("Eat Tacos")
-    expect(added_task.priority).to eq(3)
-  end
-
-  it "can show remaining tasks for a project given PID" do
-    proj_1 = @db.create_project("The Best Project")
-    @db.add_task_to_proj(proj_1.id, "Eat Tacos", 3)
-
-    tasks_remaining = @db.show_proj_tasks_remaining(proj_1.id)
-
-    # This was a bad test because it did not fail when I refactored
-    # expect(tasks_remaining).to eq(proj_1.list_incomplete_tasks)
-
-    expect(tasks_remaining).to be_a(Array)
-    expect(tasks_remaining.size).to be(1)
-    expect(tasks_remaining.first.description).to eq("Eat Tacos")
-  end
-
-  it "can show completed tasks for a project given PID" do
-    proj_1 = @db.create_project("The Best Project")
-    added_task = @db.add_task_to_proj(proj_1.id, "Eat Tacos", 3)
-
-    tasks_complete = @db.show_proj_tasks_complete(proj_1.id)
-
-    # This was a bad test because it did not fail when I refactored
-    # expect(tasks_remaining).to eq(proj_1.list_incomplete_tasks)
-    # expect(tasks_complete).to eq(proj_1.list_completed_tasks)
-
-    @db.mark_task_as_complete(added_task.id)
-    tasks_complete = @db.show_proj_tasks_complete(proj_1.id)
-
-    expect(tasks_complete).to be_a(Array)
-    expect(tasks_complete.size).to be(1)
-    expect(tasks_complete.first.description).to eq("Eat Tacos")
-  end
-
-  it "can mark a task as completed based on its id" do
-    proj_1 = @db.create_project("The Best Project")
-    added_task = @db.add_task_to_proj(proj_1.id, "Eat Tacos", 3)
-    task_id = added_task.id
-
-    completed_task = @db.mark_task_as_complete(task_id)
-
-    expect(completed_task).to be_a(TM::Task)
-    expect(completed_task.completed).to eq(true)
-  end
-
-  #############################
-  ## other Task CRUD Methods ##
-  #############################
-
-  describe "other Task CRUD Methods" do
-    let(:proj) { @db.create_project("The Best Proj") }
-    # let(:task) { @db.create_ta}
-    it "can create a task" do
-      task = @db.create_task(proj.id, "some description", 3)
-      expect(task).to be_a(TM::Task)
-      expect(task.description).to eq("some description")
-      expect(@db.tasks[task.id]).to eq(task)
+      expect(task.description).to eq("Eat Tacos")
+      expect(retrieved_task.description).to eq("Eat Tacos")
     end
 
-    it "can get a task" do
-
-      added_task = @db.add_task_to_proj(proj.id, "Eat Tacos", 3)
-      gotten_task = @db.get_task(added_task.id)
-
-      expect(gotten_task.description).to eq("Eat Tacos")
+    it 'can create and access all tasks' do
+      task = @db.create_task(proj.id, "Eat Tacos", 3)
+      all_task = @db.all_tasks
+      expect(task.description).to eq("Eat Tacos")
+      expect(@db.all_tasks.size).to eq(1)
     end
 
     it "can update a task" do
 
-      added_task = @db.add_task_to_proj(proj.id, "Eat Tacos", 3)
+      added_task = @db.create_task(proj.id, "Eat Tacos", 3)
 
       @db.update_task(added_task.id, "Make Smores", 1)
       expect(added_task.description).to eq("Make Smores")
@@ -112,7 +48,7 @@ describe 'DB' do
 
     context "if update parameters are nil or empty" do
       it "will not change these parameters" do
-        added_task = @db.add_task_to_proj(proj.id, "Eat Tacos", 3)
+        added_task = @db.create_task(proj.id, "Eat Tacos", 3)
 
         @db.update_task(added_task.id)
         expect(added_task.description).to eq("Eat Tacos")
@@ -121,65 +57,68 @@ describe 'DB' do
     end
 
     it "can delete a task" do
-      added_task = @db.add_task_to_proj(proj.id, "Eat Tacos", 3)
-
+      task = @db.create_task(proj.id, "Eat Tacos", 3)
       expect(@db.tasks.length).to eq(1)
 
-      @db.delete(added_task.id)
-      expect(@db.tasks[added_task.id]).to be_nil
-      expect(@db.tasks.length).to eq(0)
+      @db.delete(task.id)
+      expect(@db.get_task(task.id)).to be_nil
+      expect(@db.all_tasks.length).to eq(0)
     end
   end
 
-  ################################
-  ## other Project CRUD Methods ##
-  ################################
+  ##########################
+  ## Project CRUD Methods ##
+  ##########################
 
   describe "other project CRUD methods" do
 
-    let(:proj) { @db.create_project("The Best Proj") }
+    let(:proj) { @db.create_proj("Travel The World") }
 
-    it "can create a project and add it to the projects hash" do
+    it 'can create and get a proj' do
+      proj = @db.create_proj("Collect Collectibles")
 
-      proj = @db.create_project("The Best Project")
-      projects_hash = @db.projects
+      retrieved_proj = @db.get_proj(proj.id)
 
-      expect(proj).to be_a(TM::Project)
-      expect(projects_hash[proj.id]).to eq(proj)
+      expect(proj.name).to eq("Collect Collectibles")
+      expect(retrieved_proj.name).to eq("Collect Collectibles")
     end
 
-    it "can get a project" do
-      gotten_proj = @db.get_proj(proj.id)
-
-      expect(gotten_proj).to be_a(TM::Project)
-      expect(gotten_proj.name).to eq("The Best Proj")
+    it 'can create and access all projects' do
+      proj = @db.create_proj("Travel The World")
+      all_proj = @db.all_projects
+      expect(proj.name).to eq("Travel The World")
+      expect(@db.all_projects.size).to eq(1)
     end
 
     it "can update a project" do
+      retrieved_proj = @db.get_proj(proj.id)
+      expect(proj.name).to eq("Travel The World")
+      expect(retrieved_proj.name).to eq("Travel The World")
+
       @db.update_proj(proj.id, "Taking Over The World")
-      # binding.pry
+
       expect(proj.name).to eq("Taking Over The World")
-      expect(@db.projects[proj.id].name).to eq("Taking Over The World")
+      expect(retrieved_proj.name).to eq("Taking Over The World")
     end
 
     context "if update parameters are nil or empty" do
       it "will not change these parameters" do
-        @db.update_proj(proj.id, "Taking Over The World")
-        expect(proj.name).to eq("Taking Over The World")
-        expect(@db.projects[proj.id].name).to eq("Taking Over The World")
+        @db.update_proj(proj.id)
+        expect(proj.name).to eq("Travel The World")
       end
     end
 
     it "can delete a project" do
-      # calls the let statement, otherwise it never gets executed so @db.projects is an empty hash
+      # proj calls the let statement, otherwise it never gets executed so @db.projects is an empty hash
       proj
-      expect(@db.projects.length).to eq(1)
-      expect(@db.projects[proj.id]).to_not be_nil
+
+      expect(@db.all_projects.length).to eq(1)
+      expect(@db.get_proj(proj.id)).to_not be_nil
 
       @db.delete_proj(proj.id)
 
-      expect(@db.projects.length).to eq(0)
-      expect(@db.projects[proj.id]).to be_nil
+      expect(@db.all_projects.length).to eq(0)
+      expect(@db.get_proj(proj.id)).to be_nil
     end
   end
 
@@ -201,7 +140,7 @@ describe 'DB' do
       expect(@db.get_emp(emp.id).name).to eq("Jack")
     end
 
-    # test create and all_employees method
+    # tests create and all_employees method
     it 'can create and access all employees' do
       emp = @db.create_emp("Jack")
 
@@ -209,13 +148,6 @@ describe 'DB' do
       expect(emp.name).to eq("Jack")
       expect(@db.all_employees.size).to eq(1)
     end
-
-    # it 'can get an employee' do
-    #   gotten_emp = @db.get_emp(emp.id)
-
-    #   expect(gotten_emp).to be_a(TM::Employee)
-    #   expect(gotten_emp.name).to eq("Jack")
-    # end
 
     it "can update an employee" do
       updated_emp = @db.update_emp(emp.id, "Bill")
@@ -235,20 +167,79 @@ describe 'DB' do
     end
   end
 
-  ######################################
-  ## Associate Employee, Projs, Tasks ##
-  ######################################
+  ####################
+  ## Client Queries ##
+  ####################
 
-  describe "associate employees and tasks", :pending => true do
+  it "can show remaining tasks for a project given PID" do
+    @proj_1 = @db.create_proj("The Best Project")
+    @db.create_task(@proj_1.id, "Eat Tacos", 3)
 
-    let(:emp) { @db.create_emp("Jack") }
+    tasks_remaining = @db.show_proj_tasks_remaining(@proj_1.id)
+
+    # This was a bad test because it did not fail when I refactored
+    # expect(tasks_remaining).to eq(@proj_1.list_incomplete_tasks)
+
+    expect(tasks_remaining).to be_a(Array)
+    expect(tasks_remaining.size).to be(1)
+    expect(tasks_remaining.first.description).to eq("Eat Tacos")
+  end
+
+  it "can show completed tasks for a project given PID" do
+    @proj_1 = @db.create_proj("The Best Project")
+    added_task = @db.create_task(@proj_1.id, "Eat Tacos", 3)
+
+    tasks_complete = @db.show_proj_tasks_complete(@proj_1.id)
+
+    @db.mark_task_as_complete(added_task.id)
+    tasks_complete = @db.show_proj_tasks_complete(@proj_1.id)
+
+    expect(tasks_complete).to be_a(Array)
+    expect(tasks_complete.size).to be(1)
+    expect(tasks_complete.first.description).to eq("Eat Tacos")
+  end
+
+  #####################
+  ## Client Commands ##
+  #####################
+
+  it "can mark a task as completed based on its id" do
+    @proj_1 = @db.create_proj("The Best Project")
+    added_task = @db.create_task(@proj_1.id, "Eat Tacos", 3)
+    task_id = added_task.id
+
+    completed_task = @db.mark_task_as_complete(task_id)
+
+    expect(completed_task).to be_a(TM::Task)
+    expect(completed_task.completed).to eq(true)
+  end
+
+
+  describe "associate employees and tasks"do
+
+    before do
+      @emp = @db.create_emp("Jack")
+      @proj = @db.create_proj("Collect Collectibles")
+    end
 
     it "can allow an employee to participate in projects" do
-      emp = @db.add_emp_to_proj(pid, eid)
+      emp = @db.add_emp_to_proj(@proj.id, @emp.id)
+      # binding.pry
+      emp_projects = @db.show_emp_projs(emp.id)
+      project_participants = @db.show_proj_participants(@proj.id)
 
-      expect(@db.memberships.length).to eq(1)
-      expect(@db.memberships[1][eid]).to eq
+      expect(@db.all_memberships.length).to eq(1)
+      expect(emp_projects.first.name).to eq("Collect Collectibles")
+      expect(project_participants.first.name).to eq("Jack")
     end
   end
 
 end
+
+
+# it "does stuff" do
+#   task = db.create_task("do it")
+#   task2 = db.get_task(task.id)
+
+#   expect(task2.name).to eq("do it")
+# end

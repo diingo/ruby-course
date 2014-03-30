@@ -1,5 +1,9 @@
 module TM
-  # Our singleton class
+  # Our singleton getter
+  def self.db
+    @__db_instance ||= DB.new
+  end
+
   class DB
     attr_reader :projects, :tasks, :employees
 
@@ -7,55 +11,35 @@ module TM
       @projects = {}
       @tasks = {}
       @employees = {}
+      @memberships = []
     end
+
+    #######################################################
+    # Getters for tasks, projects, employees, memberships #
+    #######################################################
 
     def all_tasks
       @tasks.values
     end
 
-
-    def add_task_to_proj(pid, desc, priority)
-      create_task(pid, desc, priority)
+    def all_projects
+      @projects.values
     end
 
-    def show_proj_tasks_remaining(pid)
-      # ensure id is an integer
-      pid = pid.to_i
-
-      # array of tasks belonging to this pid
-      # @tasks.values creates an array from values in @tasks hash
-      pid_tasks = @tasks.values.select { |task| task.proj_id == pid }
-
-      incomplete_tasks = pid_tasks.select do |task|
-        task.completed == false
-      end
+    def all_employees
+      @employees.values
     end
 
-    def show_proj_tasks_complete(pid)
-      # ensure id is an integer
-      pid = pid.to_i
-
-      pid_tasks = @tasks.values.select { |task| task.proj_id == pid }
-
-      completed_tasks = pid_tasks.select { |task| task.completed == true }
+    def all_memberships
+      @memberships
     end
 
-
-    def mark_task_as_complete(tid)
-      # ensure id is an integer
-      tid = tid.to_i
-
-      @tasks[tid].completed = true
-
-      @tasks[tid]
-    end
-
-    #############################
-    ## other Task CRUD Methods ##
-    #############################
+    #######################
+    ## Task CRUD Methods ##
+    #######################
 
     # this is the same as add_task_to_proj
-    # might remove it later
+    # add_task_to_proj will later be moved to a use case
     def create_task(pid, desc, priority)
       pid = pid.to_i
       priority = priority.to_i
@@ -94,7 +78,7 @@ module TM
     ## Project CRUD Methods ##
     ##########################
 
-    def create_project(title)
+    def create_proj(title)
       proj = TM::Project.new(title)
       proj_id = proj.id
 
@@ -152,15 +136,62 @@ module TM
       @employees.delete(eid)
     end
 
-    def all_employees
-      @employees.values
+    ####################
+    ## Client Queries ##
+    ####################
+
+    def show_proj_tasks_remaining(pid)
+      # ensure id is an integer
+      pid = pid.to_i
+
+      # array of tasks belonging to this pid
+      # @tasks.values creates an array from values in @tasks hash
+      pid_tasks = @tasks.values.select { |task| task.proj_id == pid }
+
+      incomplete_tasks = pid_tasks.select do |task|
+        task.completed == false
+      end
     end
 
+    def show_proj_tasks_complete(pid)
+      # ensure id is an integer
+      pid = pid.to_i
+
+      pid_tasks = @tasks.values.select { |task| task.proj_id == pid }
+
+      completed_tasks = pid_tasks.select { |task| task.completed == true }
+    end
+
+    def show_emp_projs(eid)
+      emp_hashes_arr = @memberships.select { |memb| memb[:eid] == eid }
+      projs_of_emp_hashes_arr = emp_hashes_arr.map { |memb| @projects[memb[:pid]]}
+    end
+
+    def show_proj_participants(pid)
+      proj_hashes_arr = @memberships.select { |memb| memb[:pid] == pid }
+      emps_of_proj_hashes_arr = proj_hashes_arr.map { |memb| @employees[memb[:eid]] }
+    end
+    
+    #####################
+    ## Client Commands ##
+    #####################
+
+    def mark_task_as_complete(tid)
+      # ensure id is an integer
+      tid = tid.to_i
+
+      @tasks[tid].completed = true
+
+      @tasks[tid]
+    end
+
+    def add_emp_to_proj(pid, eid)
+      @memberships << { pid: pid, eid: eid }
+      @employees[eid]
+    end
+
+
   end
 
-  # Our singleton getter
-  def self.db
-    @__db_instance ||= DB.new
-  end
 end
 
