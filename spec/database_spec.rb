@@ -162,8 +162,8 @@ describe 'DB' do
       expect(@db.employees.size).to eq(1)
 
       @db.delete_emp(emp.id)
-      expect(@db.employees[emp.id]).to be_nil
-      expect(@db.employees.size).to eq(0)
+      expect(@db.get_emp(emp.id)).to be_nil
+      expect(@db.all_employees.size).to eq(0)
     end
   end
 
@@ -171,32 +171,74 @@ describe 'DB' do
   ## Client Queries ##
   ####################
 
-  it "can show remaining tasks for a project given PID" do
-    @proj_1 = @db.create_proj("The Best Project")
-    @db.create_task(@proj_1.id, "Eat Tacos", 3)
+  describe "Client Queries" do
+    before do
+      @emp = TM::Employee.new("Jinne")
+      @proj = @db.create_proj("The Best Project")
+    end
+    it "can show remaining tasks for a project given PID" do
 
-    tasks_remaining = @db.show_proj_tasks_remaining(@proj_1.id)
+      @db.create_task(@proj.id, "Eat Tacos", 3)
 
-    # This was a bad test because it did not fail when I refactored
-    # expect(tasks_remaining).to eq(@proj_1.list_incomplete_tasks)
+      tasks_remaining = @db.show_proj_tasks_remaining(@proj.id)
 
-    expect(tasks_remaining).to be_a(Array)
-    expect(tasks_remaining.size).to be(1)
-    expect(tasks_remaining.first.description).to eq("Eat Tacos")
-  end
+      # This was a bad test because it did not fail when I refactored
+      # expect(tasks_remaining).to eq(@proj.list_incomplete_tasks)
 
-  it "can show completed tasks for a project given PID" do
-    @proj_1 = @db.create_proj("The Best Project")
-    added_task = @db.create_task(@proj_1.id, "Eat Tacos", 3)
+      expect(tasks_remaining).to be_a(Array)
+      expect(tasks_remaining.size).to be(1)
+      expect(tasks_remaining.first.description).to eq("Eat Tacos")
+    end
 
-    tasks_complete = @db.show_proj_tasks_complete(@proj_1.id)
+    it "can show completed tasks for a project given PID" do
+      @proj = @db.create_proj("The Best Project")
+      added_task = @db.create_task(@proj.id, "Eat Tacos", 3)
 
-    @db.mark_task_as_complete(added_task.id)
-    tasks_complete = @db.show_proj_tasks_complete(@proj_1.id)
+      tasks_complete = @db.show_proj_tasks_complete(@proj.id)
 
-    expect(tasks_complete).to be_a(Array)
-    expect(tasks_complete.size).to be(1)
-    expect(tasks_complete.first.description).to eq("Eat Tacos")
+      @db.mark_task_as_complete(added_task.id)
+      tasks_complete = @db.show_proj_tasks_complete(@proj.id)
+
+      expect(tasks_complete).to be_a(Array)
+      expect(tasks_complete.size).to be(1)
+      expect(tasks_complete.first.description).to eq("Eat Tacos")
+    end
+
+    context "an employee with multiple tasks" do
+      before do
+        @task_1 = @db.create_task(@proj.id, "Buy Something", 3)
+        @task_2 = @db.create_task(@proj.id, "Eat Something", 2)
+        @task_3 = @db.create_task(@proj.id, "Do Something", 4)
+
+        @db.assign_task_to_emp(@task_1.id, @emp.id)
+        @db.assign_task_to_emp(@task_2.id, @emp.id)
+        @db.assign_task_to_emp(@task_3.id, @emp.id)
+      end
+
+      it "can show incomplete tasks assigned to an employee, given EID" do
+        @db.mark_task_as_complete(@task_1.id)
+        @db.mark_task_as_complete(@task_2.id)
+
+        tasks = @db.show_emp_tasks_remaining(@emp.id)
+
+        task_descriptions = tasks.map { |task| task.description }
+
+        expect(task_descriptions).to include("Do Something")
+        expect(task_descriptions).to_not include("Buy Something", "Eat Something")
+      end
+
+      it "can show completed tasks assigned to an employee, given EID" do
+        @db.mark_task_as_complete(@task_1.id)
+        @db.mark_task_as_complete(@task_2.id)
+
+        tasks = @db.show_emp_tasks_complete(@emp.id)
+
+        task_descriptions = tasks.map { |task| task.description }
+
+        expect(task_descriptions).to include("Buy Something", "Eat Something")
+        expect(task_descriptions).to_not include("Do Something")
+      end
+    end
   end
 
   #####################
@@ -215,7 +257,7 @@ describe 'DB' do
   end
 
 
-  describe "associate employees and tasks"do
+  describe "associate employees and projects"do
 
     before do
       @emp = @db.create_emp("Jack")
@@ -231,6 +273,24 @@ describe 'DB' do
       expect(@db.all_memberships.length).to eq(1)
       expect(emp_projects.first.name).to eq("Collect Collectibles")
       expect(project_participants.first.name).to eq("Jack")
+    end
+  end
+
+  describe "associate employees and tasks" do
+    before do
+      @emp = @db.create_emp("Jack")
+      @proj = @db.create_proj("Collect Collectibles")
+      @task = @db.create_task(@proj.id, "Buy a Ruined Oldsmobile", 3)
+    end
+
+    it "can assign tasks to employees" do
+      expect(@task.eid).to be_nil
+
+      task = @db.assign_task_to_emp(@task.id, @emp.id)
+      retrieved_task = @db.get_task(task.id)
+
+      expect(@task.eid).to eq(@emp.id)
+      expect(retrieved_task.eid).to eq(@emp.id)
     end
   end
 

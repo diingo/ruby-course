@@ -162,6 +162,17 @@ module TM
       completed_tasks = pid_tasks.select { |task| task.completed == true }
     end
 
+    def show_emp_tasks_remaining(eid)
+      tasks = all_tasks.select { |task| task.eid == eid }
+      tasks_remaining = tasks.select { |task| task.completed == false }
+    end
+
+    def show_emp_tasks_complete(eid)
+      tasks = all_tasks.select { |task| task.eid == eid }
+      tasks_remaining = tasks.select { |task| task.completed == true }
+    end
+
+    # show projects for emp with eid
     def show_emp_projs(eid)
       emp_hashes_arr = @memberships.select { |memb| memb[:eid] == eid }
       projs_of_emp_hashes_arr = emp_hashes_arr.map { |memb| @projects[memb[:pid]]}
@@ -171,7 +182,7 @@ module TM
       proj_hashes_arr = @memberships.select { |memb| memb[:pid] == pid }
       emps_of_proj_hashes_arr = proj_hashes_arr.map { |memb| @employees[memb[:eid]] }
     end
-    
+
     #####################
     ## Client Commands ##
     #####################
@@ -190,7 +201,11 @@ module TM
       @employees[eid]
     end
 
-
+    def assign_task_to_emp(tid, eid)
+      task = get_task(tid)
+      task.eid = eid
+      task
+    end
   end
 
 end

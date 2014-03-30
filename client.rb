@@ -5,19 +5,19 @@ Welcome to Project Manager Pro®. What can I do for you today?
 
 Available Commands:
   help - Show these commands again
-  project list - List all projects
-  project create NAME - Create a new project
-  project show PID - Show remaining tasks for project PID
-  project history PID - Show completed tasks for project PID
-  project employees PID - Show employees participating in this project
-  project recruit PID EID - Adds employee EID to participate in project PID
-  task create PID PRIORITY DESC - Add a new task to project PID
-  task assign TID EID - Assign task TID to employee EID
-  task mark TID - Mark task TID as complete
-  emp list - List all employees
-  emp create NAME - Create a new employee
-  emp show EID - Show employee EID and all participating projects
-  emp details EID - Show all remaining tasks assigned to employee EID,
+  *project list - List all projects
+  *project create NAME - Create a new project
+  *project show PID - Show remaining tasks for project PID
+  *project history PID - Show completed tasks for project PID
+  *project employees PID - Show employees participating in this project
+  *project recruit PID EID - Adds employee EID to participate in project PID
+  *task create PID PRIORITY DESC - Add a new task to project PID
+  *task assign TID EID - Assign task TID to employee EID
+  *task mark TID - Mark task TID as complete
+  *emp list - List all employees
+  *emp create NAME - Create a new employee
+  *emp show EID - Show employee EID and all participating projects
+  *emp details EID - Show all remaining tasks assigned to employee EID,
                     along with the project name next to each task
   emp history EID - Show completed tasks for employee with id=EID
 eos
