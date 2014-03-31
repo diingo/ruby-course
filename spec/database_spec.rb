@@ -266,7 +266,7 @@ describe 'DB' do
 
     it "can allow an employee to participate in projects" do
       emp = @db.add_emp_to_proj(@proj.id, @emp.id)
-      # binding.pry
+
       emp_projects = @db.show_emp_projs(emp.id)
       project_participants = @db.show_proj_participants(@proj.id)
 
