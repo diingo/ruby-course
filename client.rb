@@ -61,9 +61,17 @@ class TM::TerminalClient
   def project_show(pid)
     pid = pid.to_i
 
-    proj = TM.db.get_proj(pid)
-    puts "PID  Name"
-    puts "  #{proj.id}   #{proj.name}"
+    result = TM::ProjectShow.run(:pid => pid)
+
+    if result.success?
+      proj = result.project
+      puts "PID  Name"
+      puts "  #{proj.id}   #{proj.name}"
+    else
+      if result.error == :project_does_not_exist
+        puts "That project does not exist."
+      end
+    end
   end
 
   def project_history(pid)
@@ -107,8 +115,26 @@ class TM::TerminalClient
     tid = tid.to_i
     eid = eid.to_i
 
-    task = TM.db.assign_task_to_emp(tid, eid)
-    puts "Assigning task with tid=#{tid}, priority=#{task.priority}, and description \"#{task.description}\" to employee with eid=#{eid}"
+    result = TM::AssignTaskToEmployee.run(:tid => tid, :eid => eid)
+
+    if result.success?
+      task = result.task
+      employee = result.employee
+      # Show success message to user using task and employee
+      # ...
+      puts "Assigning task with tid=#{tid}, priority=#{task.priority}, and description \"#{task.description}\" to employee with eid=#{eid}"
+    else
+      # These errors come from whatever you passed into `failure`
+      if result.error == :task_does_not_exist
+        # Display error message to user
+        # ...
+        puts "A task with id #{tid} does not exist"
+      elsif result.error == :employee_does_not_exist
+        # Display error message to user
+        # ...
+        puts "An employee with id #{eid} does not exist"
+      end
+    end
   end
 
   def task_mark(tid)
