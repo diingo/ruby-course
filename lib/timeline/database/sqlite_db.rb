@@ -1,12 +1,25 @@
 module Timeline
   module Database
+
+    # def self.db
+    #   @__db_instance ||= SQLiteDB.new(@db_config)
+    # end
+
+    # def self.db_name=(db_config)
+    #  @db_config = db_config
+    # end
+
     class SQLiteDB
 
+      # def initialize(db_config)
       def initialize
+        # binding.pry
         ActiveRecord::Base.establish_connection(
-          :adapter => 'sqlite3',
-          :database => 'ar-ex_test'
+          YAML.load_file("db/config.yml")["test"]
         )
+        # ActiveRecord::Base.establish_connection(
+        #   db_config
+        # )
       end
 
       def clear_everything
@@ -51,6 +64,8 @@ module Timeline
 
       def all_users
         ar_users = User.all
+        # TO DO
+        # unfortunately, this also works with each
         ar_users.map do |ar_user|
           Timeline::User.new(ar_user.attributes)
         end
@@ -90,7 +105,7 @@ module Timeline
         # we are adding a tags key and value
         # note that we can't change ar_event.attributes hash itself
         # the merge method creates a clone that merges in a new key value pairs
-        # 
+        #
         ar_event_attrs_with_tags = ar_event.attributes.merge({:tags => tag_names_arr})
 
         Timeline::Event.new(ar_event_attrs_with_tags)
@@ -114,6 +129,11 @@ module Timeline
       def get_events_by_team(tid)
         ar_team = Team.find(tid)
         ar_events = ar_team.events.order("created_at ASC")
+        ar_events.map do |ar_event|
+          tag_names_arr = ar_event.tags.map { |tag| tag.name }
+          ar_event_attrs_with_tags = ar_event.attributes.merge({:tags => tag_names_arr})
+          Timeline::Event.new(ar_event_attrs_with_tags)
+        end
       end
     end
   end

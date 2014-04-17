@@ -2,6 +2,8 @@ require 'timeline'
 require 'timecop'
 require_relative 'database/shared/database_spec.rb'
 
+# Timeline::Database.db_name = YAML.load_file("db/config.yml")["test"]
+
 RSpec.configure do |config|
   # Auto-generated
   config.treat_symbols_as_metadata_keys_with_true_values = true

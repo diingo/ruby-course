@@ -1,5 +1,14 @@
 module Timeline
   module Database
+
+    # def self.db
+    #   @__db_instance ||= InMemory.new(@db_config)
+    # end
+
+    # def self.db_name=(db_config)
+    #  @db_config = db_config
+    # end
+
     class InMemory
 
       def initialize(config=nil)
