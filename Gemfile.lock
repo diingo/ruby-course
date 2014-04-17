@@ -62,7 +62,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_record_tasks (~> 1.0.3)
-  activemodel (~> 4.1.0)
+  activemodel (~> 4.1)
   activerecord (~> 4.1.0)
   pry-debugger (~> 0.2.2)
   rspec (~> 2.14.1)
