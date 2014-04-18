@@ -27,4 +27,11 @@ describe Timeline::GetTeamEvents do
     expect(result.events.map(&:name)).to include("x", "y", "z")
   end
 
+  it "converts all ids to integers" do
+    @params[:team_id] = team.id.to_s
+    # binding.pry
+    expect(result.success?).to eq(true)
+    expect(result.team.id).to eq(team.id)
+  end
+
 end
