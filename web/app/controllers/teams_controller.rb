@@ -8,7 +8,8 @@ class TeamsController < ApplicationController
   end
 
   def show
-    @team = Timeline.db.get_team(params[:team_id])
-    @team_events = Timeline.db.get_events_by_team(params[:team_id])
+    binding.pry
+    @team = Timeline.db.get_team(params[:id])
+    @team_events = Timeline.db.get_events_by_team(params[:id])
   end
 end

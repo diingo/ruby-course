@@ -7,6 +7,7 @@ describe Timeline::CreateEvent do
   let(:lorem_text) { "lorem ipsum" }
 
   before do
+    Timeline.db.clear_everything
     @params = {
       :user_id => user.id,
       :team_id => team.id,
@@ -29,7 +30,7 @@ describe Timeline::CreateEvent do
       expect(result.error).to eq(:missing_team)
     end
 
-    xit "ensures event has a valid name" do
+    it "ensures event has a valid name" do
       @params[:name] = ''
       expect(result.success?).to eq(false)
       expect(result.error).to eq(:invalid_event)
@@ -52,6 +53,15 @@ describe Timeline::CreateEvent do
     event = Timeline.db.get_event(result.event.id)
     expect(event.name).to eq "I persisted"
     expect(event.content).to eq(lorem_text)
+  end
+
+  it "converts all ids to integers" do
+    @params[:user_id] = user.id.to_s
+    @params[:team_id] = team.id.to_s
+    # binding.pry
+    expect(result.success?).to eq(true)
+    expect(result.user.id).to eq(user.id)
+    expect(result.team.id).to eq(team.id)
   end
 
   xit "downcases all tags" do

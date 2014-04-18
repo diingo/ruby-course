@@ -1,4 +1,8 @@
 <h1>Teams#show</h1>
 <p>Find me in app/views/teams/show.html.erb</p>
 <p><%= @team.name %></p>
-<p><%= %></p>
+<ul>
+<% @team_events.each do |event| %>
+  <li><%= event %></li>
+<% end %>
+</ul>
