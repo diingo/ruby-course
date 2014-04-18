@@ -15,9 +15,11 @@ module Timeline
   end
 
   def self.db_seed
-    self.db.create_team(name: "The Happy Makers")
-    self.db.create_team(name: "The People")
-    self.db.create_team(name: "The Funnies")
+    team_1 = self.db.create_team(name: "The Happy Makers")
+    team_2 = self.db.create_team(name: "The People")
+    team_3 = self.db.create_team(name: "The Funnies")
+    user = self.db.create_user(name: "Mario")
+    event = self.db.create_event(name: user.name, user_id: user.id, team_id: team_1.id )
   end
 end
 
