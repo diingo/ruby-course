@@ -2,9 +2,7 @@
 shared_examples 'a database' do
 
   let(:db) { described_class.new }
-  # note that this won't work because it won't know which 
-  # Timeline::Database.db to use - the in_memory or the sqlite db file
-  # let(:db) { Timeline::Database.db }
+  # note that the note previously here was WRONG lol
 
   before { db.clear_everything }
 
