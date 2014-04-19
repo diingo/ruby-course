@@ -64,6 +64,11 @@ describe Timeline::CreateEvent do
     expect(result.team.id).to eq(team.id)
   end
 
+  it "defaults tags to an empty array" do
+    @params[:tags] = nil
+    expect(result.success?).to eq(true)
+  end
+  
   xit "downcases all tags" do
     @params[:tags] = ['classroom', 'JavaScript']
     expect(result.success?).to eq(true)
