@@ -3,7 +3,7 @@ Web::Application.routes.draw do
 
   get 'teams/index' => 'teams#index'
 
-  get 'teams/show/:team_id' => 'teams#show'
+  get 'teams/:team_id' => 'teams#show'
 
 
   # The priority is based upon order of creation: first created -> highest priority.
