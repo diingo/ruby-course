@@ -1,9 +1,10 @@
 Web::Application.routes.draw do
-  get 'events/create'
+  post 'events/create' => 'events#create'
 
   get 'teams/index' => 'teams#index'
 
   get 'teams/show/:team_id' => 'teams#show'
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

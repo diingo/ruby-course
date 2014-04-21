@@ -1,5 +1,24 @@
 class EventsController < ApplicationController
+  def new
+    @event = Timeline::Event.new
+  end
+
   def create
-    # @event = Timeline.db.create(params)
+    # @event = Timeline::Event.new(params)
+    result = Timeline::CreateEvent.run(params)
+
+    if result.success?
+
+      @event = result.event
+    else
+      @error = result.error
+      @event = Timeline::Event.new(params)
+
+      # team_result = Timeline::GetTeamEvents.run(team_id: params[:team_id])
+      # @team = team_result.team
+
+      render 'teams/show'
+    end
+
   end
 end

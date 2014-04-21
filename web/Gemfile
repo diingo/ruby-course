@@ -7,6 +7,10 @@ eval File.read(app_gemfile_path)
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.0'
 
+group :development do
+  gem "better_errors"
+  gem "binding_of_caller"
+end
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'

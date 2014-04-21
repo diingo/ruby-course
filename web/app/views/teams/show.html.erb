@@ -1,8 +1,28 @@
 <h1>Teams#show</h1>
 <p>Find me in app/views/teams/show.html.erb</p>
+
+<% if flash[:success] %>
+<%= flash[:success] %>
+<% end %>
+
+<% if @error %>
+<%= @error %>
+<% else %>
 <p><%= @team.name %></p>
 <ul>
 <% @team_events.each do |event| %>
   <li><%= event.name %></li>
 <% end %>
 </ul>
+<% end %>
+
+
+<%= form_tag("/events/create", method: "post") do %>
+  <%= label_tag(:name, "Name:") %>
+  <%= text_field_tag(:name, @event.name) %>
+  <%= label_tag(:user_id, "User Id:") %>
+  <%= text_field_tag(:user_id, @event.user_id) %>
+  <%= label_tag(:team_id, "Team Id:") %>
+  <%= text_field_tag(:team_id, @event.team_id) %>
+  <%= submit_tag("Create New Event") %>
+<% end %>

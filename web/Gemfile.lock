@@ -33,6 +33,11 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
     arel (5.0.1.20140414130214)
+    better_errors (1.1.0)
+      coderay (>= 1.0.0)
+      erubis (>= 2.6.6)
+    binding_of_caller (0.7.2)
+      debug_inspector (>= 0.0.1)
     builder (3.2.2)
     coderay (1.1.0)
     coffee-rails (4.0.1)
@@ -43,6 +48,7 @@ GEM
       execjs
     coffee-script-source (1.7.0)
     columnize (0.3.6)
+    debug_inspector (0.0.2)
     debugger (1.6.6)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
@@ -148,6 +154,8 @@ DEPENDENCIES
   active_record_tasks (~> 1.0.3)
   activemodel (~> 4.1)
   activerecord (~> 4.1.0)
+  better_errors
+  binding_of_caller
   coffee-rails (~> 4.0.0)
   jbuilder (~> 1.2)
   jquery-rails
