@@ -7,7 +7,7 @@ module Timeline
 
     class InMemory
 
-      def initialize(config=nil)
+      def initialize(env=nil)
         clear_everything
       end
 
@@ -27,6 +27,7 @@ module Timeline
       def create_user(attrs)
         id = (@user_id_counter += 1)
         attrs[:id] = id
+
         User.new(attrs).tap {|user| @users[id] = user }
       end
 

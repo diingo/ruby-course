@@ -17,12 +17,10 @@
 <% end %>
 
 
-<%= form_tag("/events/create", method: "post") do %>
+<%= form_tag("/teams/#{@team_id}/events", method: "post") do %>
   <%= label_tag(:name, "Name:") %>
   <%= text_field_tag(:name, @event.name) %>
   <%= label_tag(:user_id, "User Id:") %>
   <%= text_field_tag(:user_id, @event.user_id) %>
-  <%= label_tag(:team_id, "Team Id:") %>
-  <%= text_field_tag(:team_id, @event.team_id) %>
   <%= submit_tag("Create New Event") %>
 <% end %>

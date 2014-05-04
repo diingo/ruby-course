@@ -3,11 +3,10 @@ module Timeline
 
     class SQLiteDB
 
-      # def initialize(db_config)
-      def initialize
-        # binding.pry
+      def initialize(env)
         ActiveRecord::Base.establish_connection(
-          YAML.load_file("db/config.yml")["test"]
+          # env = ENV['RACK_ENV'] || ENV['RAILS_ENV'] || 'test'
+          YAML.load_file("db/config.yml")[env]
         )
         # ActiveRecord::Base.establish_connection(
         #   db_config

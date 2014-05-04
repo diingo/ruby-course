@@ -7,11 +7,15 @@ require 'yaml'
 module Timeline
   def self.db
     @db_class ||= Database::InMemory
-    @__db_instance ||= @db_class.new
+    @__db_instance ||= @db_class.new(@env || 'test')
   end
 
   def self.db_class=(db_class)
     @db_class = db_class
+  end
+
+  def self.env=(env_name)
+    @env = env_name
   end
 
   def self.db_seed

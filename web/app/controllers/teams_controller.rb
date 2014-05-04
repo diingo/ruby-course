@@ -20,6 +20,7 @@ class TeamsController < ApplicationController
       @message = 'it worked'
       @team = result.team
       @team_events = result.events
+      @team_id = params[:team_id]
     else
       flash[:notice] = result.error
       redirect_to '/teams/index'

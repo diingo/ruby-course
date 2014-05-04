@@ -1,7 +1,7 @@
 
 shared_examples 'a database' do
 
-  let(:db) { described_class.new }
+  let(:db) { described_class.new('test') }
   # note that the note previously here was WRONG lol
 
   before { db.clear_everything }

@@ -1,7 +1,8 @@
 Web::Application.routes.draw do
-  post 'events/create' => 'events#create'
 
-  get 'teams/index' => 'teams#index'
+  post 'teams/:team_id/events' => 'events#create'
+
+  get 'teams' => 'teams#index'
 
   get 'teams/:team_id' => 'teams#show'
 

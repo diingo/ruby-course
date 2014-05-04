@@ -10,7 +10,7 @@ class EventsController < ApplicationController
     if result.success?
 
       @event = result.event
-      redirect_to 'teams/index'
+      redirect_to '/teams'
     else
       @error = result.error
       @event = Timeline::Event.new(params)
