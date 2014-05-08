@@ -4,13 +4,14 @@ module Timeline
     class SQLiteDB
 
       def initialize(env)
+          # binding.pry
+          #TO DO: edit this to work
+        # config_path = File.join(File.dirname(__FILE__), '../../../db/config.yml')
+        # puts "USING: #{env} - #{YAML.load_file(config_path)[env]}"
         ActiveRecord::Base.establish_connection(
-          # env = ENV['RACK_ENV'] || ENV['RAILS_ENV'] || 'test'
-          YAML.load_file("db/config.yml")[env]
+          # YAML.load_file("db/config.yml")[env]
+          YAML.load_file('db/config.yml')[env]
         )
-        # ActiveRecord::Base.establish_connection(
-        #   db_config
-        # )
       end
 
       def clear_everything
