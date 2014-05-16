@@ -1,7 +1,7 @@
 module Timeline
   module Database
 
-    class SQLiteDB
+    class PostGres
 
       def initialize(env)
           # binding.pry

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Timeline::Database::SQLiteDB do
+describe Timeline::Database::PostGres do
 
   it_behaves_like "a database"
 
