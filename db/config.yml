@@ -1,12 +1,17 @@
 test:
-  adapter: sqlite3
-  database: ar-ex_test.db
-  pool: 5
-  timeout: 5000
-
+  adapter: postgres
+  database: ar-ex_test
+  encoding: unicode
+  host: localhost
 
 development:
-  adapter: sqlite3
-  database: ar-ex_dev.db
-  pool: 5
-  timeout: 5000
+  adapter: postgres
+  database: ar-ex_dev
+  encoding: unicode
+  host: localhost
+
+production:
+  adapter: postgres
+  database: ar-ex_prod
+  encoding: unicode
+  host: localhost
